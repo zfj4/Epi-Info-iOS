@@ -1,0 +1,24 @@
+
+var azureMobileApps = require('azure-mobile-apps');
+
+var table = azureMobileApps.table();
+
+var epiToken = "CHANGE ME";
+
+var authorize = function (req, res, next) {
+	if (req.headers['epi-token'] == epiToken) {
+		next();
+	}
+	else {
+		res.status(401);
+		res.send('UNAUTHORIZED');
+	}
+};
+
+
+table.read.use(authorize, table.operation);
+table.insert.use(authorize, table.operation);
+table.update.use(authorize, table.operation);
+table.delete.use(authorize, table.operation);
+
+module.exports = table;
